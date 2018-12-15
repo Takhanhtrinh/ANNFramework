@@ -100,6 +100,119 @@ void testMatrixCopy() {
   M_cleanup(d);
   M_cleanup(dcp);
 }
+void testMatrixMul() {
+  Matrix2D * m1 = M_create2D(2,3,0.0);
+  Matrix2D * m2 = M_create2D(3,4,0.0);
+  m1->_array[0][0] = 2;
+  m1->_array[0][1] = 1;
+  m1->_array[0][2] = 4; 
+  m1->_array[1][0] = 0;
+  m1->_array[1][1] = 1;
+  m1->_array[1][2] = 1;
+
+  m2->_array[0][0] = 6;
+  m2->_array[0][1] = 3;
+  m2->_array[0][2] = -1;
+  m2->_array[0][3] = 0;
+  m2->_array[1][0] = 1;
+  m2->_array[1][1] = 1;
+  m2->_array[1][2] = 0;
+  m2->_array[1][3] = 4;
+  m2->_array[2][0] = -2;
+  m2->_array[2][1] = 5;
+  m2->_array[2][2] = 0;
+  m2->_array[2][3] = 2;
+  Matrix2D * result = NULL;
+
+  int status=  M_mul_2d(m1,m2,(void**)&result);
+  assert(status > 0);
+  assert(result != NULL);
+  M_print(result);
+  M_save(result,"output.txt");
+  M_cleanup(m1);
+  M_cleanup(result);
+  M_cleanup(m2);
+  Matrix2D * load = NULL;
+  load = (Matrix2D*)M_load("output.txt");
+  M_print(load);
+  M_cleanup(load);
+}
+void testAddMatrix() {
+  Matrix2D * m1 = M_create2D(2,3,0.0);
+  Matrix2D * m2 = M_create2D(2,3,0.0);
+  m1->_array[0][0] = 2;
+  m1->_array[0][1] = 1;
+  m1->_array[0][2] = 4; 
+  m1->_array[1][0] = 0;
+  m1->_array[1][1] = 1;
+  m1->_array[1][2] = 1;
+
+  m2->_array[0][0] = 3;
+  m2->_array[0][1] = 4;
+  m2->_array[0][2] = 3; 
+  m2->_array[1][0] = 2;
+  m2->_array[1][1] = 1;
+  m2->_array[1][2] = 23.3;
+
+  Matrix2D * result = NULL;
+  int status = M_add_2d(m1,m2,(void**)&result);
+  assert(status > 0);
+  assert(result != NULL);
+  printf("matrix1:\n");
+  M_print(m1);
+  printf("matrix2:\n");
+  M_print(m2);
+  printf("matrix result:\n");
+  M_print(result);
+  M_save(result,"output.txt");
+  M_cleanup(m1);
+  M_cleanup(m2);
+  M_cleanup(result);
+  Matrix2D * load = NULL;
+  load = (Matrix2D*)M_load("output1.txt");
+  if (load != NULL) {
+    M_print(load);
+    M_cleanup(load);
+  }
+}
+void testTranpose() {
+  Matrix2D * m = M_create2D(11,2,0.0);
+  m->_array[0][0] = 1;
+  m->_array[2][0] = 2;
+  m->_array[3][0] = 3;
+  m->_array[4][0] = 4;
+  m->_array[5][0] = 5;
+  m->_array[6][0] = 6;
+  m->_array[7][0] = 7;
+  m->_array[8][0] = 8;
+  m->_array[9][0] = 9;
+  m->_array[10][0] = 10;
+
+
+  m->_array[0][1] = 3;
+  m->_array[2][1] = 4;
+  m->_array[3][1] = 5;
+  m->_array[4][1] = 2;
+  m->_array[5][1] = 1;
+  m->_array[6][1] = 2.3;
+  m->_array[7][1] = 4.1;
+  m->_array[8][1] = 2;
+  m->_array[9][1] = 77;
+  m->_array[10][1] = 0;
+  printf("before:\n");
+  M_print(m);
+
+  Matrix2D * r  = NULL; 
+  int status = M_tranpose(m,(void**)&r);
+  assert(status > 0);
+  assert(r != NULL);
+  printf("after:\n");
+  M_print(r);
+
+  M_cleanup(m);
+  M_cleanup(r);
+
+}
 
 
 int main() {
@@ -112,7 +225,10 @@ int main() {
   //testAddScalar2Return();
   
   //testSubScalar2Return();
-  testSubScalar2NoReturn();
+  //testSubScalar2NoReturn();
+  //testMatrixMul();
+  testAddMatrix();
+  //testTranpose();
   
   return 0;
 }
